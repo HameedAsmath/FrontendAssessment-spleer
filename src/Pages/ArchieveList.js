@@ -11,9 +11,9 @@ const ArchieveList = () => {
     const getContactList = async()=>{
       try {
         const res = await axios.get(BASE_URL+"/activities", {signal})
-        console.log(res.data)
-        console.log("archieved list",res.data.filter((data)=>data.is_archived===true))
-        setArchieveList(res.data.filter((data)=>data.is_archived===true))
+        console.log(res?.data)
+        console.log("archieved list",res?.data.filter((data)=>data.is_archived===true))
+        setArchieveList(res?.data.filter((data)=>data.is_archived===true))
       } catch (error) {
         if (!axios.isCancel(error)) {
           alert("Something went wrong")

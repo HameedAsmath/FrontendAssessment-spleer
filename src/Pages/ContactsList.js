@@ -5,62 +5,68 @@ import { BASE_URL } from '../Utils/constants'
 import ContactsCard from '../components/ContactsCard'
 const ContactsList = () => {
   const [contactDetails, setContactDetails] = useState()
+
   const controller = new AbortController();
   const { signal } = controller;
-  useEffect(()=>{
-    const getContactList = async()=>{
+  //get all contacts
+  useEffect(() => {
+    const getContactList = async () => {
       try {
-        const res = await axios.get(BASE_URL+"/activities", {signal})
-        setContactDetails(res.data.filter((data)=>data.is_archived===false))
-        console.log("Contact List",res.data.filter((data)=>data.is_archived===false))
+        const res = await axios.get(BASE_URL + "/activities", { signal })
+        let filteredData = res.data.filter((data) => data.is_archived === false)
+    
+        const today = new Date();
+        const todayDateString = today.toISOString();
+        const modifiedData = [...filteredData, {
+          "direction": "inbound",
+          "from": 1234,
+          "to": 1234,
+          "via": 1234,
+          "duration": 21312,
+          "is_archived": false,
+          "call_type": "missed",
+          "id": "639a10a9328500b1a0fa9c04",
+          "created_at": todayDateString,
+        }, {
+          "direction": "outbound",
+          "from": 5678,
+          "to": 1234,
+          "via": 9836,
+          "duration": 21312,
+          "is_archived": false,
+          "call_type": "voicemail",
+          "id": "639a10a9328500b1a0fa9q03",
+          "created_at": todayDateString,
+        }]
+        const sortedData = modifiedData.sort((first, second) => {
+          return new Date(second.created_at).getTime() - new Date(first.created_at).getTime()
+          });
+        setContactDetails(sortedData)
+        console.log("Contact List", modifiedData)
       } catch (error) {
         console.log(error)
         if (!axios.isCancel(error)) {
           alert("Something went wrong")
-          return
         }
       }
     }
     getContactList()
 
-    return  () => {
-      controller.abort() 
+    return () => {
+      controller.abort()
     }
-  },[])
-  const archieveall = async () => {
-    // Clear the contactDetails array
-    setContactDetails([]);
-    try {
-      for (const contactDetail of contactDetails) {
-        const updateURL = `${BASE_URL}activities/${contactDetail.id}`;
-        const res = await axios.patch(updateURL, { is_archived: true });
-        if (res.data) console.log(res.data);
-      }
-  
-      await Promise.all(
-        contactDetails.map(async (contactDetail) => {
-          const updateURL = `${BASE_URL}activities/${contactDetail.id}`;
-          const res = await axios.patch(updateURL, { is_archived: true });
-          if (res.data) console.log(res.data);
-          return res.data;
-        })
-      );
+  }, [])
 
-    } catch (error) {
-      console.error("Error archiving contacts:", error);
-      alert("Contact is not archived");
-    }
-  };
-  if(!contactDetails) return <ShimmerCard/>
+  if (!contactDetails) return <ShimmerCard />
   return (
-    <div className=' max-h-[800px] overflow-y-auto'>
-      {contactDetails.length===0 && (<h1>No Contacts found</h1>)}
-      {contactDetails.length>0 && (<button onClick={()=>archieveall()} className='bg-blue-800 text-white rounded-lg p-2 my-2 '>Archieve All <i class='bx bx-archive-in' style={{color: "#ffffff"}}  ></i></button>)}
-      {contactDetails.map((data)=>(
-        <ContactsCard key={data.id} data={data} setContactDetails={setContactDetails} contactDetails={contactDetails}/>
+    <div className=''>
+      {contactDetails.length === 0 && (<h1>No Contacts found</h1>)}
+
+      {contactDetails.map((data,index) => (
+        <ContactsCard key={index} data={data} setContactDetails={setContactDetails} contactDetails={contactDetails} />
       ))}
     </div>
-  ) 
+  )
 }
 
 export default ContactsList

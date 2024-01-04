@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 
 const Header = () => {
     return (
-        <div className='bg-blue-200'>
+        <div className='bg-blue-200 rounded-md'>
             <Logo className="" />
             <nav id='sidebar'>
                 <div className='flex flex-row justify-between'>

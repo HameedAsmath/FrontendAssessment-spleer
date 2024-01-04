@@ -3,6 +3,7 @@ import profileImg from "../assets/profile.png"
 import { useNavigate, useParams } from 'react-router-dom'
 import { BASE_URL } from '../Utils/constants'
 import ShimmerCard from '../components/Shimmer'
+
 const ContactDetails = () => {
   const [contactDetail, setContactDetail] = useState()
   const controller = new AbortController();
@@ -11,44 +12,30 @@ const ContactDetails = () => {
   const handleBack = () => {
     navigate(-1)
   }
-  useEffect(() => {
-    const { id } = useParams()
-    const getContact = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}activities/${id}`, { signal })
-        setContactDetail(res.data)
-        console.log("Contact List", res.data)
-      } catch (error) {
-        console.log(error)
-        if (!axios.isCancel(error)) {
-          alert("Something went wrong")
-          return
-        }
+  const { id } = useParams()
+  console.log(id)
+  //to set the contact detail
+  useEffect(()=>{
+    const getcontact = async() => {
+      try{
+        const res = await fetch(`https://cerulean-marlin-wig.cyclic.app/activities/6393bb5469073dc45849ca7a`)
+        const data = await res.json()
+        console.log(data)
+        setContactDetail(data)
+      }catch(err){
+        console.log(err)
+        alert("Failed to fetch data")
       }
     }
-    getContact()
-
-    return () => {
-      controller.abort()
-    }
-  }, [])
-  const archieveContact = async (id) => {
-    const updateURL = `${BASE_URL}activities/${id}`
-    try {
-      const res = await axios.patch(updateURL, { is_archived: true })
-      if (res.data) alert(res.data)
-    } catch (error) {
-      alert("Contact is not archieved")
-    }
-  }
+    getcontact()
+  },[])
+  
   if (!contactDetail) return <ShimmerCard />
+
   return (
     <div className=''>
       <div className='archieve-container flex justify-between mt-4'>
-        <button className='cursor-pointer'><i class='bx bxs-chevrons-left bx-sm text-slate-500' onClick={() => handleBack()}></i></button>
-        {!contactDetail.is_archived && (
-          <button className='' onClick={() => archieveContact(contactDetail.id)}><i class='bx bx-archive-in bx-sm text-slate-500'></i></button>
-        )}
+        <button className='cursor-pointer'><i className='bx bxs-chevrons-left bx-sm text-slate-500' onClick={() => handleBack()}></i></button>
       </div>
       <div className='profile-container'>
         <div className=''>
@@ -56,23 +43,26 @@ const ContactDetails = () => {
           <p className='text-center my-2'>{contactDetail?.to}</p>
         </div>
       </div>
-      <div className='flex justify-center gap-6'>
-        <div>
-          <div className='p-2 rounded-full bg-blue-300'><i class='bx bxs-message-alt-detail text-blue-800'></i></div>
+      <div className='flex justify-center gap-6 my-4'>
+        <div className='text-center'>
+          <div className=' rounded-full '><i className='bx bx-right-top-arrow-circle text-blue-800 bg-blue-300 rounded-full p-3'></i></div>
           <div>
-            <p>{contactDetail?.call_type}</p>
+            <p>Via</p>
+            <p className=' font-semibold'>{contactDetail?.via}</p>
           </div>
         </div>
-        <div>
-          <div className='p-2 rounded-full bg-blue-300'><i class='bx bxs-time-five text-blue-800'></i></div>
+        <div className='text-center'>
+          <div className=' rounded-full '><i className='bx bx-timer text-blue-800 bg-blue-300 rounded-full p-3'></i></div>
           <div>
-            <p>{contactDetail?.duration}</p>
+            <p>Duration</p>
+            <p className=' font-semibold'>{contactDetail?.duration} mins</p>
           </div>
         </div>
-        <div>
-          <div className='p-2 rounded-full bg-blue-300'><i class='bx bx-calendar text-blue-800'></i></div>
+        <div className='text-center'>
+          <div className=' rounded-full '><i className='bx bx-phone text-blue-800 bg-blue-300 rounded-full p-3'></i></div>
           <div>
-            <p>{contactDetail?.duration}</p>
+            <p>Call type</p>
+            <p className=' font-semibold'>{contactDetail?.call_type}</p>
           </div>
         </div>
       </div>

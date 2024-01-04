@@ -23,6 +23,7 @@ const ContactsCard = ({ data, setContactDetails, contactDetails}) => {
   const dateOptions = {
     month: 'short',
     day: 'numeric',
+    year: 'numeric'
   };
   const navigate = useNavigate()
   const handleNavigation = (id) => {
@@ -43,7 +44,7 @@ const ContactsCard = ({ data, setContactDetails, contactDetails}) => {
         </div>
         <div className='flex flex-row gap-2'>
           <div><p>{formattedTime}</p></div>
-          <div onClick={() => handleNavigation(data.id)} className=' cursor-pointer'><i className='bx bx-dots-vertical-rounded bx-sm' style={{color: "#1e40af"}}></i></div>
+          {!data.is_archived && <div onClick={() => archieveContact(data.id)} className=' cursor-pointer'><i className='bx bx-archive-in bx-sm' style={{color: "#1e40af"}}></i></div>}
         </div>
       </div>
   )
