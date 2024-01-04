@@ -26,7 +26,7 @@ const RoutesComponent = () => {
               element: <ContactDetails/>
             },
             {
-              path: '*',
+              path: "*",
               element: <Notfound />,
             },
           ],
