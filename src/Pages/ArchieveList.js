@@ -43,7 +43,7 @@ const ArchieveList = () => {
   return (
     <div>
       <div>
-        {ArchieveList.length>0 && (<button onClick={()=>unarchieveall()} className='bg-blue-800 text-white rounded-lg p-2 my-2 '>UnArchieve All <i class='bx bx-archive-out' style={{color: "#ffffff"}}  ></i></button>)}
+        {ArchieveList.length>0 && (<button onClick={()=>unarchieveall()} className='bg-blue-800 text-white rounded-lg p-2 my-2 '>UnArchieve All <i className='bx bx-archive-out' style={{color: "#ffffff"}}  ></i></button>)}
         {ArchieveList.length===0 && (<button onClick={()=>unarchieveall()}><p className='text-center'>No archieved Contacts found</p></button>)}
       </div>
       {ArchieveList.map((data)=>(
